@@ -449,10 +449,7 @@ qsub -pe multiprocess 5 -N _wgetP6 ~/bin/dummy.sh bash -c "printf \"%s\n\" ${ftp
 ### Had to launch manually through qlogin
 #printf "%s\n" ${ftpURLs[@]} | xargs -I {} -n 1 -P 5 wget -q -c {} &
 
-
 qsub -pe multiprocess 16 -N _wgetFastq -l walltime=60:00:00 ~/bin/dummy.sh bash -c "grep '^PR' PRJEB8094.txt | cut -d$'\t' -f 10 | tr ';' '\n' | xargs -I {} -n 1 -P 16 wget -q -c {}"
-
-qsub 
 
 # manually moving the downloaded files to the fastq directory
 mkdir fastq
@@ -532,14 +529,9 @@ do
 done
 
 
-
-
-
-
-
-
-
-
+#================================================================================================================================
+# **** END ****
+#================================================================================================================================
 
 ### Concatenating the fastq files *** takes about 15 min per patient
 equis=( P10E0=CDYI01=SAMEA3182054=GCA_001408995 P10E7=CDYF01=SAMEA3182078=GCA_001403175 P10E90=CDYK01=SAMEA3182102=GCA_001403255 P11E0=CDYG01=SAMEA3182055=GCA_001403435 P11E7=CDYJ01=SAMEA3182079=GCA_001408575 P11E90=CDYR01=SAMEA3182103=GCA_001408955 P12E0=CDYH01=SAMEA3182056=GCA_001408695 P12E7=CDYE01=SAMEA3182080=GCA_001408895 P12E90=CDYL01=SAMEA3182104=GCA_001409095 P13E0=CDYS01=SAMEA3182057=GCA_001408555 P13E7=CDYM01=SAMEA3182081=GCA_001403535 P13E90=CDYU01=SAMEA3182105=GCA_001282865 P14E0=CDYZ01=SAMEA3182058=GCA_001403415 P14E7=CDZA01=SAMEA3182082=GCA_001403335 P14E90=CDZB01=SAMEA3182106=GCA_001403495 P15E0=CDYQ01=SAMEA3182059=GCA_001408475 P15E7=CDYN01=SAMEA3182083=GCA_001403395 P15E90=CDYY01=SAMEA3182107=GCA_001282845 P17E0=CDYT01=SAMEA3182060=GCA_001408655 P17E7=CDYP01=SAMEA3182084=GCA_001408535 P17E90=CDZK01=SAMEA3182108=GCA_001408375 P18E0=CDYX01=SAMEA3182061=GCA_001403315 P18E7=CDZC01=SAMEA3182085=GCA_001408315 P18E90=CDZE01=SAMEA3182109=GCA_001408255 P19E0=CDZH01=SAMEA3182062=GCA_001409015 P19E7=CDZG01=SAMEA3182086=GCA_001409055 P19E90=CDZI01=SAMEA3182110=GCA_001403195 P1E0=CDTW01=SAMEA3182045=GCA_001403375 P1E7=CDZD01=SAMEA3182069=GCA_001403115 P1E90=CDZF01=SAMEA3182093=GCA_001408755 P20E0=CDZL01=SAMEA3182063=GCA_001408735 P20E7=CDZM01=SAMEA3182087=GCA_001408775 P20E90=CDZJ01=SAMEA3182111=GCA_001408355 P21E0=CDZP01=SAMEA3182064=GCA_001403455 P21E7=CDZO01=SAMEA3182088=GCA_001282745 P21E90=CDZQ01=SAMEA3182112=GCA_001403235 P22E0=CDZR01=SAMEA3182065=GCA_001403135 P22E7=CDZN01=SAMEA3182089=GCA_001408975 P22E90=CDZS01=SAMEA3182113=GCA_001409075 P23C0=CDZT01=SAMEA3182066=GCA_001408635 P23C7=CDZV01=SAMEA3182090=GCA_001403275 P23C90=CDZU01=SAMEA3182114=GCA_001408455 P25C0=CDZW01=SAMEA3182067=GCA_001408595 P25C7=CDZY01=SAMEA3182091=GCA_001408915 P25C90=CEAA01=SAMEA3182115=GCA_001408675 P2E0=CEAB01=SAMEA3182046=GCA_001408875 P2E7=CEBV01=SAMEA3182070=GCA_001403055 P2E90=CEAC01=SAMEA3182094=GCA_001408395 P38C0=CEAF01=SAMEA3182068=GCA_001408435 P38C7=CEAH01=SAMEA3182092=GCA_001408715 P38C90=CEAG01=SAMEA3182116=GCA_001403355 P3E0=CEAJ01=SAMEA3182047=GCA_001403515 P3E7=CEAK01=SAMEA3182071=GCA_001282825 P3E90=CEAL01=SAMEA3182095=GCA_001408615 P4E0=CEAM01=SAMEA3182048=GCA_001408415 P4E7=CECB01=SAMEA3182072=GCA_001403155 P4E90=CEAN01=SAMEA3182096=GCA_001403555 P5E0=CEAO01=SAMEA3182049=GCA_001408835 P5E7=CEAP01=SAMEA3182073=GCA_001409115 P5E90=CEAQ01=SAMEA3182097=GCA_001408795 P6C0=CEBY01=SAMEA3182050=GCA_001403035 P6C7=CEAZ01=SAMEA3182074=GCA_001408295 P6C90=CEAX01=SAMEA3182098=GCA_001403015 P7C0=CECA01=SAMEA3182051=GCA_001408275 P7C7=CEAR01=SAMEA3182075=GCA_001408495 P7C90=CECF01=SAMEA3182099=GCA_001403075 P8C0=CECJ01=SAMEA3182052=GCA_001408815 P8C7=CEAE01=SAMEA3182076=GCA_001403475 P8C90=CEAI01=SAMEA3182100=GCA_001408855 P9E0=CEAD01=SAMEA3182053=GCA_001403295 P9E7=CDZX01=SAMEA3182077=GCA_001403215 P9E90=CDTY01=SAMEA3182101=GCA_001409035 )
@@ -620,18 +612,128 @@ do
 done
 
 
+qsub -pe multiprocess 5 -N _bwa ~/bin/dummy.sh bash -c "bwa mem -t 5 ${genomeHandle} ${num_1} ${num_2} > samOut/${num}.sam"
+qsub -N _indexGenome ~/bin/dummy.sh bash -c "bwa index allGenomes.fasta"
 
-cat ./fastq/ERR719694_1.fastq ./fastq/ERR719695_1.fastq ./fastq/ERR719696_1.fastq ./fastq/ERR719697_1.fastq ./fastq/ERR719698_1.fastq ./fastq/ERR719699_1.fastq ./fastq/ERR719700_1.fastq ./fastq/ERR719701_1.fastq ./fastq/ERR719702_1.fastq ./fastq/ERR719703_1.fastq ./fastq/ERR719704_1.fastq ./fastq/ERR719705_1.fastq ./fastq/ERR719706_1.fastq ./fastq/ERR719707_1.fastq > merged/P20_E0_1.fastq
-cat ./fastq/ERR719694_2.fastq ./fastq/ERR719695_2.fastq ./fastq/ERR719696_2.fastq ./fastq/ERR719697_2.fastq ./fastq/ERR719698_2.fastq ./fastq/ERR719699_2.fastq ./fastq/ERR719700_2.fastq ./fastq/ERR719701_2.fastq ./fastq/ERR719702_2.fastq ./fastq/ERR719703_2.fastq ./fastq/ERR719704_2.fastq ./fastq/ERR719705_2.fastq ./fastq/ERR719706_2.fastq ./fastq/ERR719707_2.fastq > merged/P20_E0_2.fastq
-cat ./fastq/ERR719708_1.fastq ./fastq/ERR719709_1.fastq ./fastq/ERR719710_1.fastq ./fastq/ERR719711_1.fastq ./fastq/ERR719712_1.fastq ./fastq/ERR719713_1.fastq ./fastq/ERR719714_1.fastq ./fastq/ERR719715_1.fastq ./fastq/ERR719716_1.fastq ./fastq/ERR719717_1.fastq > merged/P20_E7_1.fastq
-cat ./fastq/ERR719708_2.fastq ./fastq/ERR719709_2.fastq ./fastq/ERR719710_2.fastq ./fastq/ERR719711_2.fastq ./fastq/ERR719712_2.fastq ./fastq/ERR719713_2.fastq ./fastq/ERR719714_2.fastq ./fastq/ERR719715_2.fastq ./fastq/ERR719716_2.fastq ./fastq/ERR719717_2.fastq > merged/P20_E7_2.fastq
-cat ./fastq/ERR719718_1.fastq ./fastq/ERR719719_1.fastq ./fastq/ERR719720_1.fastq ./fastq/ERR719721_1.fastq ./fastq/ERR719722_1.fastq ./fastq/ERR719723_1.fastq ./fastq/ERR719724_1.fastq ./fastq/ERR719725_1.fastq ./fastq/ERR719726_1.fastq ./fastq/ERR719727_1.fastq ./fastq/ERR719728_1.fastq ./fastq/ERR719729_1.fastq ./fastq/ERR719730_1.fastq ./fastq/ERR719731_1.fastq ./fastq/ERR719732_1.fastq ./fastq/ERR719733_1.fastq ./fastq/ERR719734_1.fastq ./fastq/ERR719735_1.fastq ./fastq/ERR719736_1.fastq ./fastq/ERR719737_1.fastq ./fastq/ERR719738_1.fastq ./fastq/ERR719739_1.fastq ./fastq/ERR719740_1.fastq > merged/P20_E90_1.fastq
-cat ./fastq/ERR719718_2.fastq ./fastq/ERR719719_2.fastq ./fastq/ERR719720_2.fastq ./fastq/ERR719721_2.fastq ./fastq/ERR719722_2.fastq ./fastq/ERR719723_2.fastq ./fastq/ERR719724_2.fastq ./fastq/ERR719725_2.fastq ./fastq/ERR719726_2.fastq ./fastq/ERR719727_2.fastq ./fastq/ERR719728_2.fastq ./fastq/ERR719729_2.fastq ./fastq/ERR719730_2.fastq ./fastq/ERR719731_2.fastq ./fastq/ERR719732_2.fastq ./fastq/ERR719733_2.fastq ./fastq/ERR719734_2.fastq ./fastq/ERR719735_2.fastq ./fastq/ERR719736_2.fastq ./fastq/ERR719737_2.fastq ./fastq/ERR719738_2.fastq ./fastq/ERR719739_2.fastq ./fastq/ERR719740_2.fastq > merged/P20_E90_2.fastq
+# scp user@host.domain:path ... dest
+scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomeII/allGenomes.fasta ./
+
+scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P10J0* ./
+
+scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/bamOut/P17J7.bam ./
+
+
+
+#scp file... user@host.domain:path
+scp indexGenome/* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomeII
+
+
+bwa mem /shares/home/users/augerjer/Downloads/indexGenome/allGenomes.fasta /shares/data2/augerjer/PRJEB8094/P6/merged/P6_C0_1.fastq /shares/data2/augerjer/PRJEB8094/P6/merged/P6_C0_2.fastq > ~/testBwa.sam
+
+cd /shares/home/users/augerjer/Downloads/testFastq
+
+bwa mem ../indexGenome/allGenomes.fasta ./Sample_P10J0_R1.fastq.gz ./Sample_P10J0_R2.fastq.gz > testSam.sam
+
+
+#!/bin/bash
+
+#PBS -d /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge
+#PBS -N _unzipAllFastq
+#PBS -l walltime=00:15:00
+#PBS -S /bin/bash
+
+find -name "*gz" | xargs -I {} -n 1 -P 1 gunzip -d {}
+
+
+genomeHandle='/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomes/allGenomes.fasta'
+for f_r1 in $(find ./ -name "*R1*fastq")
+do
+    name=$(echo $(basename $f_r1) | cut -d_ -f1,2)
+    f_r2=$(echo $f_r1 | sed 's/_R1/_R2/')
+    echo -e '#!/bin/bash\n' > qsubBatch/${name}_bwa.sh
+    echo -e "#PBS -d $PWD\n#PBS -N _BWA_${name}\n#PBS -l walltime=02:00:00\n#PBS -S /bin/bash\n" >> qsubBatch/${name}_bwa.sh
+    echo "date > logs/log${name}.txt" >> qsubBatch/${name}_bwa.sh
+    echo "bwa mem -t 24 ${genomeHandle} ${f_r1} ${f_r2} > samOut/${name}.sam" >> qsubBatch/${name}_bwa.sh
+    echo "date >> logs/log${name}.txt" >> qsubBatch/${name}_bwa.sh
+done
+
+for shFile in $(ls qsubBatch/ | cut -d_ -f1,2 )
+do 
+    if [ ! -e samOut/${shFile}.sam ]
+    then
+        qsub ./qsubBatch/${shFile}_bwa.sh
+    fi
+done
+
+
+for shFile in $(ls qsubBatch/ | egrep 'P8J90|P8J7|P18J7|P4J90')
+do
+    qsub ./qsubBatch/$shFile
+done
+
+
+scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomeII/allGenomes.fasta ./
+scp user@host.domain:path ... dest
+
+scp ./metagenome* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/
+
+/shares/home/users/augerjer/PRJEB8094/elenSpecific/metagenome/metagenome.fna ./ 
+
+
+#================================================================================================================================
+# *** NEW FILES *** From aligned sam files, extracting the E. Lenta specific read numbers and count
+#================================================================================================================================
+### Generating the initial sorted and indexed bam files (takes some time)
+# *** change to cd ./alignments *** #
+for file in `ls *meta.sam`
+do
+    echo "qsub -pe multiprocess 5 -N _samIndex ~/bin/dummy.sh bash -c \"samtools view -b -S ${file} > ${file::-4}.bam && samtools sort ${file::-4}.bam -o ${file::-4}_sort.bam && samtools index ${file::-4}_sort.bam\""
+done
+
+samtools view -b -S ${file} > ${file::-4}.bam && 
+samtools sort ${file::-4}.bam -o ${file::-4}_sort.bam && 
+
+
+for f_r1 in $(find ./ -name "")
+do
+    name=$(echo $(basename $f_r1) | cut -d_ -f1,2)
+    f_r2=$(echo $f_r1 | sed 's/_R1/_R2/')
+    echo -e '#!/bin/bash\n' > qsubBatch/${name}_bwa.sh
+    echo -e "#PBS -d $PWD\n#PBS -N _BWA_${name}\n#PBS -l walltime=02:00:00\n#PBS -S /bin/bash\n" >> qsubBatch/${name}_bwa.sh
+    echo "date > logs/log${name}.txt" >> qsubBatch/${name}_bwa.sh
+    echo "bwa mem -t 24 ${genomeHandle} ${f_r1} ${f_r2} > samOut/${name}.sam" >> qsubBatch/${name}_bwa.sh
+    echo "date >> logs/log${name}.txt" >> qsubBatch/${name}_bwa.sh
+done
+
+
+for file in $(find ./samOut -name "*.sam")
+do
+    samtools view -b -S ${file} > bamOut/${file::-4}.bam
+done
+
+
+find ./samOut -name "*.sam" -print0 | 
+xargs -0 -n 1 -P 24 -I {} bash -c 'samtools view -b -S {} > bamOut/${::-4}.bam'
+
+find ./samOut -name "*.sam" -print0 | 
+xargs -0 -n 1 -P 24 -I {} echo 'samtools view -b -S {} > bamOut/ $1 .bam'
 
 
 
 
-ok, la ça devrait marcher!
+### Starting with sorted and indexed bam files aligned on the metagenome local DB, 
+### extracting the number of mapped reads that have more than 90 mapped nucleotides on the 101 pb reads (quite fast)
+
+for inHandle in `ls | grep "\.bam\.bai"`
+do 
+    ID=`echo $inHandle | cut -d '_' -f 1,2`
+    samtools view -f 2 -h -b ${inHandle::-4} CP001726.1 > ${ID}_f2_meta_1726.bam
+    bedtools bamtobed -i ${ID}_f2_meta_1726.bam -cigar | awk -F '\t' '($3-$2 > 90) { print $4 }' > ${ID}_meta_f2_1726_HitsList.txt
+done
+
+
+samtools view -f 2 -h -b ${inHandle::-4} CP001726.1 > ${ID}_f2_meta_1726.bam
+
 
 
 
