@@ -586,34 +586,12 @@ do
     echo "cat ${patientsArray_2[@]} > merged/${patientID}_2.fastq"
 done
     
-echo ${#patientsArray_1[@]}
-echo ${#patientsArray_2[@]}
-
-
-
-for equi in ${equis[@]}
-do
-    patientsArray_1=()
-    patientsArray_2=()
-    patientID=`echo $equi | cut -d '=' -f 1 | sed 's/\([EC]\)/_\1/'`
-    if [[ ! $patientID =~ P20.* ]]
-    then 
-        continue
-    fi
-    sampleID=`echo $equi | cut -d '=' -f 3`
-    runIDs=`grep ${sampleID} ../../allFastq/PRJEB8094.txt | cut -d$'\t' -f 5`
-    for runID in ${runIDs[@]}
-    do
-        patientsArray_1+=("./fastq/${runID}_1.fastq")
-        patientsArray_2+=("./fastq/${runID}_2.fastq")
-    done
-    echo "mv ${patientsArray_1[@]} > merged/${patientID}_1.fastq"
-    echo "mv ${patientsArray_2[@]} > merged/${patientID}_2.fastq"
-done
-
 
 qsub -pe multiprocess 5 -N _bwa ~/bin/dummy.sh bash -c "bwa mem -t 5 ${genomeHandle} ${num_1} ${num_2} > samOut/${num}.sam"
-qsub -N _indexGenome ~/bin/dummy.sh bash -c "bwa index allGenomes.fasta"
+qsub -N _indexGenome ~/bin/dummy.sh bash -c "bwa index uniqGenomes.fasta"
+
+qsub -N _indexRsem ~/bin/dummy.sh bash -c "rsem-prepare-reference uniqGenomes.fasta rsemIdxGenome"
+
 
 # scp user@host.domain:path ... dest
 scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomeII/allGenomes.fasta ./
@@ -623,16 +601,14 @@ scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_a
 scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/bamOut/P17J7.bam ./
 
 
+scp augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomes/uniqGenomes.fasta ./
 
 #scp file... user@host.domain:path
-scp indexGenome/* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/refGenomeII
 
+scp indexGenome/* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/uniqGenome
 
-bwa mem /shares/home/users/augerjer/Downloads/indexGenome/allGenomes.fasta /shares/data2/augerjer/PRJEB8094/P6/merged/P6_C0_1.fastq /shares/data2/augerjer/PRJEB8094/P6/merged/P6_C0_2.fastq > ~/testBwa.sam
+scp ./* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex
 
-cd /shares/home/users/augerjer/Downloads/testFastq
-
-bwa mem ../indexGenome/allGenomes.fasta ./Sample_P10J0_R1.fastq.gz ./Sample_P10J0_R2.fastq.gz > testSam.sam
 
 
 #!/bin/bash
@@ -732,11 +708,81 @@ do
 done
 
 
-<<<<<<< HEAD:misc.sh
-=======
-samtools view -f 2 -h -b ${inHandle::-4} CP001726.1 > ${ID}_f2_meta_1726.bam
+#=========================================================================================
+#
+#  Section for RSEM aligner
+#
+#=========================================================================================
+/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/samOut
+module load gcc/6.1.0
+module load bioinformatics/rsem/1.2.31
+module load bioinformatics/bowtie2
 
->>>>>>> b67057d2cdc61d442e8b84a5b1e06bfd834a1b54:bash/misc.sh
+--bowtie2
+
+rsem-prepare-reference [options] reference_fasta_file(s) reference_name
+rsem-prepare-reference -p 8 --bowtie2 uniqGenomes.fasta uniqGenomesIdx
+
+rsem-calculate-expression --paired-end /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta 
+
+rsem-calculate-expression --paired-end /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta P9J0_exprLevel
+
+bowtie -q --phred33-quals -n 2 -e 99999999 -l 25 -I 1 -X 1000 -p 1 -a -m 200 -S /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta -1 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq -2 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq | samtools view -S -b -o bob.temp/bob.bam -
+Could not locate a Bowtie index corresponding to basename "/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta"
+Command: bowtie --wrapper basic-0 -q --phred33-quals -n 2 -e 99999999 -l 25 -I 1 -X 1000 -p 1 -a -m 200 -S -1 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq -2 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta 
+
+rsem-parse-alignments /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta bob.temp/bob bob.stat/bob bob.temp/bob.bam 3 -tag XM
+Cannot open /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta.grp! It may not exist.
+"rsem-parse-alignments /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta bob.temp/bob bob.stat/bob bob.temp/bob.bam 3 -tag XM" failed! Plase check if you provide correct parameters/options for the pipeline!
+
+
+rsem-calculate-expression -p 8 --paired-end \
+                    --bowtie2 --bowtie2-path software/bowtie2-2.2.6 \
+                    --estimate-rspd \
+                    --append-names \
+                    --output-genome-bam \
+                    data/SRR937564_1.fastq data/SRR937564_2.fastq \
+                    ref/mouse_ref exp/LPS_6h
+
+
+
+#!/bin/bash
+
+#PBS -N _p9j0ExprLevel
+#PBS -V
+#PBS -S /bin/bash
+#PBS -l walltime=00:10:00
+#PBS -q qtest
+
+module load gcc/6.1.0
+module load bioinformatics/rsem/1.2.31
+module load bioinformatics/bowtie2
+
+cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/samOut
+
+rsem-calculate-expression -p 8 --paired-end \
+                    --bowtie2 \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta \
+                    P9J0_exprLevel
+
+
+
+#!/bin/bash
+
+#PBS -N _indexRsem
+#PBS -V
+#PBS -S /bin/bash
+#PBS -l walltime=06:00:00
+
+module load gcc/6.1.0
+module load bioinformatics/rsem/1.2.31
+module load bioinformatics/bowtie2
+
+cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII
+
+rsem-prepare-reference -p 8 --bowtie2 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta uniqGenomes
+
 
 
 

@@ -29,5 +29,5 @@ r2List=()
     r2Cmd+=" cat ${r2List[@]} > ./fastqCat/${r2Name} "
 done
 
-echo ${r1Cmd[@]} | xargs -n 1 -P 12 -I {} bash -c '{}' bash
-echo ${r2Cmd[@]} | xargs -n 1 -P 12 -I {} bash -c '{}' bash
+echo ${r1Cmd[@]} | xargs -n 1 -P 12 -I {} bash -c '{}' 
+echo ${r2Cmd[@]} | xargs -n 1 -P 12 -I {} bash -c '{}' 
