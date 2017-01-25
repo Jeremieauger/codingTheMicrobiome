@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#PBS -N _getReads
+#PBS -N _getP21J90
 #PBS -V
 #PBS -S /bin/bash
-#PBS -l walltime=06:00:00
+#PBS -l walltime=24:00:00
 
 cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/bamOut
 bamOut=/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/bamOut
@@ -21,5 +21,9 @@ function getReads {
 }
 export -f getReads
 
-find $bamOut -iname '*hitsList*' -print0 |
-xargs -0 -n 1 -P 24 -I {} bash -c 'getReads {}'
+find $bamOut -maxdepth 1 -iname 'P21J90*hitsList*' -print0 |
+xargs -0 -n 1 -P 1 -I {} bash -c 'getReads {}'
+
+
+
+

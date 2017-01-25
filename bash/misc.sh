@@ -781,7 +781,7 @@ module load bioinformatics/bowtie2
 
 cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII
 
-rsem-prepare-reference -p 8 --bowtie2 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta uniqGenomes
+rsem-prepare-reference -p 8 --bowtie2 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta uniqGenomes.fasta
 
 
 
