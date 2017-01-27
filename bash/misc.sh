@@ -713,6 +713,7 @@ done
 #  Section for RSEM aligner
 #
 #=========================================================================================
+
 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/samOut
 module load gcc/6.1.0
 module load bioinformatics/rsem/1.2.31
@@ -760,7 +761,7 @@ module load bioinformatics/bowtie2
 
 cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/samOut
 
-rsem-calculate-expression -p 8 --paired-end \
+rsem-calculate-expression -p 24 --paired-end \
                     --bowtie2 \
                     /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq \
                     /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta \

@@ -26,4 +26,3 @@ xargs -0 -n 1 -P 1 -I {} bash -c 'getReads {}'
 
 
 
-
