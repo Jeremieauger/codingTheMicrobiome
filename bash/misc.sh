@@ -609,6 +609,7 @@ scp indexGenome/* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch
 
 scp ./* augerjer@dubemar1-mp2.ccs.usherbrooke.ca:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex
 
+scp calQc:/mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/samOut/P9J0_exprLevel.stat/* ./P9J0_exprLevel.stat/
 
 
 #!/bin/bash
@@ -629,7 +630,7 @@ do
     echo -e '#!/bin/bash\n' > qsubBatch/${name}_bwa.sh
     echo -e "#PBS -d $PWD\n#PBS -N _BWA_${name}\n#PBS -l walltime=02:00:00\n#PBS -S /bin/bash\n" >> qsubBatch/${name}_bwa.sh
     echo "date > logs/log${name}.txt" >> qsubBatch/${name}_bwa.sh
-    echo "bwa mem -t 24 ${genomeHandle} ${f_r1} ${f_r2} > samOut/${name}.sam" >> qsubBatch/${name}_bwa.sh
+    echo "bwa mem -t 24 ${genomeHandle} ${f_r1} ${f_r2} > samOut/${name}.sam" >> qsubBatch/${n22sw1111111111111111111ame}_bwa.sh
     echo "date >> logs/log${name}.txt" >> qsubBatch/${name}_bwa.sh
 done
 
@@ -666,9 +667,8 @@ do
     echo "qsub -pe multiprocess 5 -N _samIndex ~/bin/dummy.sh bash -c \"samtools view -b -S ${file} > ${file::-4}.bam && samtools sort ${file::-4}.bam -o ${file::-4}_sort.bam && samtools index ${file::-4}_sort.bam\""
 done
 
-samtools view -b -S ${file} > ${file::-4}.bam && 
-samtools sort ${file::-4}.bam -o ${file::-4}_sort.bam && 
-
+samtools view -b -S ${file} > ${file::-4}.bam && samtools sort ${file::-4}.bam -o ${file::-4}_sort.bam && samtools index ${file::-4}_sort.bam
+P9J0-FOX-ANA.bam
 
 for f_r1 in $(find ./ -name "")
 do
@@ -706,6 +706,13 @@ do
     samtools view -f 2 -h -b ${inHandle::-4} CP001726.1 > ${ID}_f2_meta_1726.bam
     bedtools bamtobed -i ${ID}_f2_meta_1726.bam -cigar | awk -F '\t' '($3-$2 > 90) { print $4 }' > ${ID}_meta_f2_1726_HitsList.txt
 done
+
+
+
+
+samtools view -f 2 -h P12J7-MEB-ANA_sort.bam
+samtools view -f 2 -h -b P12J7-MEB-ANA_sort.bam CP001726.1 > P12J7-MEB-ANA_f2_1726.bam
+bedtools bamtobed -i P12J7-MEB-ANA_f2_1726.bam -cigar | awk -F '\t' '($3-$2 > 90) { print $4 }' > P12J7-MEB-ANA_f2_1726_HitsList.txt
 
 
 #=========================================================================================
@@ -747,25 +754,6 @@ rsem-calculate-expression -p 8 --paired-end \
 
 
 
-#!/bin/bash
-
-#PBS -N _p9j0ExprLevel
-#PBS -V
-#PBS -S /bin/bash
-#PBS -l walltime=00:10:00
-#PBS -q qtest
-
-module load gcc/6.1.0
-module load bioinformatics/rsem/1.2.31
-module load bioinformatics/bowtie2
-
-cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/samOut
-
-rsem-calculate-expression -p 24 --paired-end \
-                    --bowtie2 \
-                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq \
-                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndex/uniqGenomes.fasta \
-                    P9J0_exprLevel
 
 
 
@@ -784,6 +772,74 @@ cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeDat
 
 rsem-prepare-reference -p 8 --bowtie2 /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta uniqGenomes.fasta
 
+
+
+#!/bin/bash
+
+#PBS -N _p9j0ExprLevel
+#PBS -V
+#PBS -S /bin/bash
+#PBS -l walltime=00:10:00
+#PBS -q qtest
+
+module load gcc/6.1.0
+module load bioinformatics/rsem/1.2.31
+module load bioinformatics/bowtie2
+
+cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/samOut
+
+rsem-calculate-expression -p 24 --paired-end \
+                    --bowtie2 \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R1.fastq /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J0_R2.fastq \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta \
+                    P9J0_exprLevel
+
+# -rw-r--r-- 1 augerjer dubemar1  11G Dec 20 17:59 Sample_P9J0_R1.fastq
+# -rw-r--r-- 1 augerjer dubemar1  11G Dec 20 17:59 Sample_P9J0_R2.fastq
+# -rw-r--r-- 1 augerjer dubemar1 6.2G Dec 20 18:20 Sample_P9J7_R1.fastq
+# -rw-r--r-- 1 augerjer dubemar1 6.2G Dec 20 18:20 Sample_P9J7_R2.fastq
+# -rw-r--r-- 1 augerjer dubemar1  21G Dec 20 18:22 Sample_P9J90_R1.fastq
+# -rw-r--r-- 1 augerjer dubemar1  21G Dec 20 18:22 Sample_P9J90_R2.fastq
+
+#!/bin/bash
+
+#PBS -N _p9j7ExprLevel
+#PBS -V
+#PBS -S /bin/bash
+#PBS -l walltime=24:00:00
+
+module load gcc/6.1.0
+module load bioinformatics/rsem/1.2.31
+module load bioinformatics/bowtie2
+
+cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/samOut
+
+rsem-calculate-expression -p 24 --paired-end \
+                    --bowtie2 \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J7_R1.fastq \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J7_R2.fastq \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta \
+                    P9J7_exprLevel
+
+#!/bin/bash
+
+#PBS -N _p9j90ExprLevel
+#PBS -V
+#PBS -S /bin/bash
+#PBS -l walltime=24:00:00
+
+module load gcc/6.1.0
+module load bioinformatics/rsem/1.2.31
+module load bioinformatics/bowtie2
+
+cd /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/samOut
+
+rsem-calculate-expression -p 24 --paired-end \
+                    --bowtie2 \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J90_R1.fastq \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/merge/Sample_P9J90_R2.fastq \
+                    /mnt/parallel_scratch_mp2_wipe_on_august_2017/dubemar1/augerjer/MicrobiomeData/NCBI-Taxonomy/rsemIndexII/uniqGenomes.fasta \
+                    P9J90_exprLevel
 
 
 

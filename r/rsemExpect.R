@@ -36,6 +36,22 @@ J90 = rsemExpect[rsemExpect$day == 90, ]
 hist(rsemExpect$expected_count, breaks=100)
 plot(rsemExpect$expected_count)
 
+median(log(E0$expected_count))
+log(median(E0$expected_count))
+
+median(log(E7$expected_count))
+log(median(E7$expected_count))
+
+
+mean(log(winsorize(E0$expected_count)))
+mean(log(winsorize(E7$expected_count)))
+log(mean(winsorize(E7$expected_count)))
+log(mean(winsorize(E0$expected_count)))
+
+
+
+
+
 var(rsemExpect$expected_count)/mean(rsemExpect$expected_count)
 
 boxplot(C0$expected_count, C7$expected_count, C90$expected_count, E0$expected_count, E7$expected_count, E90$expected_count, 
@@ -45,6 +61,14 @@ beanplot(C0$expected_count, C7$expected_count, C90$expected_count, E0$expected_c
          log = "y", main="RSEM", names=c("C0", "C7", "C90","E0", "E7", "E90"))
 beanplot(C0$expected_count, C7$expected_count, C90$expected_count, E0$expected_count, E7$expected_count, E90$expected_count,
          log = "", main="RSEM", names=c("C0", "C7", "C90","E0", "E7", "E90"))
+
+par(mfrow=c(1,2))
+beanplot(C0$expected_count, C7$expected_count, C90$expected_count, E0$expected_count, E7$expected_count, E90$expected_count,
+         overallline = "median", log = "y", main="RSEM-Log", names=c("C0", "C7", "C90","E0", "E7", "E90"))
+beanplot(C0$expected_count, C7$expected_count, C90$expected_count, E0$expected_count, E7$expected_count, E90$expected_count,
+         overallline = "median", log = "", main="RSEM", names=c("C0", "C7", "C90","E0", "E7", "E90"))
+
+
 
 
 model <- lm(expected_count ~ treatment + day + age + sex, data=rsemExpect)
@@ -69,6 +93,7 @@ model <- lm(expected_count ~ treatment + day + age + sex, data=J0J7Expect); summ
 
 J0J7Expect <- rsemExpect[rsemExpect$day != 90,  ]
 model <- lm(expected_count ~ treatment + day, data=J0J7Expect); summary(model)
+
 
 model <- lm(expected_count ~ treatment + day, data=J0); summary(model)
 model <- lm(expected_count ~ treatment + day, data=J7); summary(model)
@@ -144,7 +169,7 @@ betaNorm <- function(list){
   max.list <- max(list)
   N <- length(list)
   list <- sapply(list, function(x) (x-min.list)/(max.list - min.list))
-  list <- sapply(list, function(x) ((x*(N-1) + 0.5)/N))
+  list <- sapply(list, function(x) ((x*(N-1) + 0.25)/N))
   list
 }
 
@@ -172,10 +197,22 @@ rsemExpect["decostand"] <- noZero(decostand(rsemExpect$expected_count, method = 
 rsemExpect["decostand"] <- betaNorm(rsemExpect$expected_count)
 
 model <- betareg(decostand ~ treatment + day + age + sex, data=rsemExpect)
+model <- betareg(minMax ~ treatment + day + age + sex, data=rsemExpect)
 # model <- betareg(decostand ~ treatment + day*treatment, data=rsemExpect)
 summary(model)
 plot(model)
 
+model <- betareg(noZero ~ treatment + day + age + sex, data=rsemExpect)
+model <- betareg(betaNorm ~ treatment + day + age + sex, data=rsemExpect)
+model <- betareg(betaNorm ~ treatment + day, data=rsemExpect)
+model <- betareg(minMax ~ treatment + day, data=rsemExpect)
+summary(model)
+
+rsemExpect$minMax
+
+
+
+rsemExpect$
 
 rsemJ0J7["decostand"] <- toMinMax(decostand(rsemJ0J7$expected_count, method = "range"))
 rsemJ0J7["decostand"] <- noZero(decostand(rsemJ0J7$expected_count, method = "range"))
@@ -195,30 +232,27 @@ rsemExpect["noZero"] <- noZero(decostand(rsemExpect$expected_count, method = "ra
 rsemExpect["betaNorm"] <- betaNorm(rsemExpect$expected_count)
 
 rsemExpect["minMax"] <- as.numeric(toMinMax(decostand(rsemExpect$expected_count, method = "range")))
-rsemExpect["noZero"] <- as.numeric(noZero(decostand(rsemExpect$expected_count, method = "range")))
+xsrsemExpect["noZero"] <- as.numeric(noZero(decostand(rsemExpect$expected_count, method = "range")))
 rsemExpect["betaNorm"] <- as.numeric(betaNorm(rsemExpect$expected_count))
 
 
+hist(rsemExpect["minMax"])
+hist(rsemExpect["minMax"])
+hist(rsemExpect["noZero"])
+hist(rsemExpect["betaNorm"])
 
-library(beanplot)
-boxplot(rsemExpect["noZero"], rsemExpect["betaNorm"], rsemExpect["minMax"], outline = FALSE, main="RSEM", names=c("C0", "C7", "C90"))
-
-
-beanplot(rsemExpect["noZero"], rsemExpect["betaNorm"], rsemExpect["minMax"])
-
-boxplot(rsemExpect$noZero, rsemExpect$minMax)
-
-hist(as.numeric(rsemExpect["minMax"]))
-hist(as.numeric(rsemExpect["noZero"]))
-hist(as.numeric(rsemExpect["betaNorm"]))
+hist(winsorize(rsemExpectpect$expected_count), main = "expected_count", breaks=100)
+hist(winsorize(rsemExpect$noZero), main = "noZero", breaks=100)
+hist(winsorize(rsemExpect$minMax), main = "minMax", breaks=100)
+hist(winsorize(rsemExpect$betaNorm), main = "betaNorm", breaks=100)
 
 
+dev.off()
 par ( mfrow = c ( 2, 2 ) )   #  4 graphics on 1 screen
-#dev.off()
-hist(rsemExpect$expected_count, breaks=100)
-hist(rsemExpect$noZero, breaks=100)
-hist(rsemExpect$minMax, breaks=100)
-hist(rsemExpect$betaNorm, breaks=100)
+hist(winsorize(rsemExpect$expected_count), breaks=100, main = "expected_count")
+hist(rsemExpect$noZero, breaks=100, main = "noZero")
+hist(rsemExpect$minMax, breaks=100, main = "minMax")
+hist(rsemExpect$betaNorm, breaks=100, main = "betaNorm")
 
 library(ggplot2)
 install.packages("devtools")
@@ -259,13 +293,60 @@ p<-ggplot(tmp, aes(x=group, y=value)) +
   labs(x = "betaNorm", y = "Value")
 p
 
-df <- ToothGrowth
-ggplot2.dotplot(data=df, xName='dose',yName='len',
-                mainTitle="Plot of length according\n to the dose",
-                xtitle="Dose (mg)", ytitle="Length")
+par(mfrow=c(1,4))
+dev.off()
+boxplot(winsorize(rsemExpect$expected_count), main = "expected_count")
+boxplot(winsorize(rsemExpect$noZero), main = "noZero")
+boxplot(winsorize(rsemExpect$minMax), main = "minMax")
+boxplot(winsorize(rsemExpect$betaNorm), main = "betaNorm")
+
+dev.off()
+par(mfrow=c(1,4))
+beanplot(winsorize(rsemExpect$expected_count), main = "expected_count")
+beanplot(rsemExpect$noZero, main = "noZero")
+beanplot(rsemExpect$minMax, main = "minMax")
+beanplot(rsemExpect$betaNorm, main = "betaNorm")
+
+beanplot(winsorize(rsemExpect$expected_count), main = "expected_count", log="")
+beanplot(rsemExpect$noZero, main = "noZero", log="")
+beanplot(rsemExpect$minMax, main = "minMax", log="")
+beanplot(rsemExpect$betaNorm, main = "betaNorm", log="")
 
 
-df["supp"] <- NULL
+# Normalise, simply
+rsemExpect["minMax"] <- as.numeric(toMinMax(decostand(rsemExpect$expected_count, method = "range")))
+rsemExpect["noZero"] <- as.numeric(noZero(decostand(rsemExpect$expected_count, method = "range")))
+rsemExpect["betaNorm"] <- as.numeric(betaNorm(rsemExpect$expected_count))
+
+# Winsorize, then normalise
+rsemExpect["minMax"] <- as.numeric(toMinMax(decostand(winsorize(rsemExpect$expected_count), method = "range")))
+rsemExpect["noZero"] <- as.numeric(noZero(decostand(winsorize(rsemExpect$expected_count), method = "range")))
+rsemExpect["betaNorm"] <- as.numeric(betaNorm(winsorize(rsemExpect$expected_count)))
+
+
+E0E7 <- rsemExpect[rsemExpect$day != 90 & rsemExpect$treatment == 1, ]
+
+model <- betareg(minMax ~ treatment + day + age + sex, data=rsemExpect)
+model <- lm(betaNorm ~ day, data=E0E7)
+model <- lm(expected_count ~ day, data=E0E7)
+summary(model)
+
+
+
+### johanna, 22 fév
+#counts~ day + age + sex + (1|B)
+
+head(rsemExpect)
+rsemExpect["patient0"] <- as.integer(gsub('[a-zA-Z]', '', rsemExpect$patient))
+fit <- lm(betaNorm ~ treatment + day + age + sex + (1 | patient0), data = rsemExpect)
+fit <- betareg(betaNorm ~ treatment + day + age + sex + (patient0), data = rsemExpect)
+
+fit <- betareg(betaNorm ~ treatment, data = rsemExpect)
+summary(fit)
+
+rsemExpect["patient0"] <- toPatient0(rsemExpect["patient"])
+
+#rsemExpect[c("patient0","patient")]
 
 
 

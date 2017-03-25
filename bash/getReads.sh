@@ -24,5 +24,3 @@ export -f getReads
 find $bamOut -maxdepth 1 -iname 'P21J90*hitsList*' -print0 |
 xargs -0 -n 1 -P 1 -I {} bash -c 'getReads {}'
 
-
-

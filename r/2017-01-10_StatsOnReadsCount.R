@@ -5,11 +5,40 @@ winsorize <- function(x, q=0.05) {
   x
 }
 
-
+E0E7
 
 DF <- read.csv("/Users/jay/GitHub/codingTheMicrobiome/r/2017-01-10_extractedReadsRatio.csv")
 DF <- read.csv("~/GitHub/codingTheMicrobiome/r/2017-01-10_extractedReadsRatio.csv")
 DFLM <- read.csv("~/GitHub/codingTheMicrobiome/r/bwaForLm.csv")
+
+### Tests 21 fév 2017
+
+J0 <- DFLM[DFLM$Time0 == 0, ]
+J0 <- DFLM[DFLM$Time0 == 1, ]
+
+
+E0 <- DFLM[DFLM$Time0 == 0 & DFLM$Treatment == 1, ]
+E7 <- DFLM[DFLM$Time0 == 1 & DFLM$Treatment == 1, ]
+
+plot(DFLM$Ratio)
+
+var(E0$TotalReads)
+var(E7$TotalReads)
+
+dev.off()
+par(mfrow=c(1,2))
+plot(E0$TotalReads, E0$MappedReads, main = "E0")
+plot(E7$TotalReads, E7$MappedReads, main = "E7")
+
+bob <- lm(E0$MappedReads ~ E0$TotalReads)
+lm(E0$MappedReads ~ E0$TotalReads)
+lm(E7$MappedReads ~ E7$TotalReads)
+
+plot(E0$MappedReads ~ E0$TotalReads)
+
+#============================
+
+
 
 model <- lm(Ratio ~ Treatment + Time0 + Age + Sex, data=DFLM)
 model <- lm(Ratio ~ Treatment + Time0 + Treatment*Time0 + Age + Sex, data=DFLM)

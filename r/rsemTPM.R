@@ -1,4 +1,4 @@
-winsorize <- function(x, q=0.05) {
+awinsorize <- function(x, q=0.05) {
   extrema <- quantile(x, c(q, 1-q))  
   x[x<extrema[1]] <- extrema[1]
   x[x>extrema[2]] <- extrema[2]
