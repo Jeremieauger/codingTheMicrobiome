@@ -6,7 +6,8 @@ winsorize <- function(x, q=0.05) {
 }
 
 library(readxl)
-rsemDF <- read_csv("~/GitHub/codingTheMicrobiome/data/rsemDF.csv")
+library(tidyr)
+rsemDF <- read.csv("~/GitHub/codingTheMicrobiome/data/rsemDF.csv")
 rsemExpect <- read_excel("~/GitHub/codingTheMicrobiome/data/rsemExpect.xlsx")
 # Do you winsorize the data?
 rsemExpect["expected_count"] <- lapply(rsemExpect["expected_count"], winsorize)
@@ -232,7 +233,7 @@ rsemExpect["noZero"] <- noZero(decostand(rsemExpect$expected_count, method = "ra
 rsemExpect["betaNorm"] <- betaNorm(rsemExpect$expected_count)
 
 rsemExpect["minMax"] <- as.numeric(toMinMax(decostand(rsemExpect$expected_count, method = "range")))
-xsrsemExpect["noZero"] <- as.numeric(noZero(decostand(rsemExpect$expected_count, method = "range")))
+rsemExpect["noZero"] <- as.numeric(noZero(decostand(rsemExpect$expected_count, method = "range")))
 rsemExpect["betaNorm"] <- as.numeric(betaNorm(rsemExpect$expected_count))
 
 
@@ -326,12 +327,18 @@ rsemExpect["betaNorm"] <- as.numeric(betaNorm(winsorize(rsemExpect$expected_coun
 
 E0E7 <- rsemExpect[rsemExpect$day != 90 & rsemExpect$treatment == 1, ]
 
-model <- betareg(minMax ~ treatment + day + age + sex, data=rsemExpect)
+model <- betareg(betaNorm ~ treatment + day + age + sex, data=rsemExpect)
 model <- lm(betaNorm ~ day, data=E0E7)
 model <- lm(expected_count ~ day, data=E0E7)
+model <- lm(betaNorm ~ day + age + sex, data=E0E7)
 summary(model)
 
+model <- betareg(betaNorm ~ day + age + sex, data=rsemExpect)
 
+
+wilcox.test(subset(rsemExpect, day == 0 & treatment == 1)$expected_count, 
+            subset(rsemExpect, day == 7 & treatment == 1)$expected_count, 
+            paired = TRUE)
 
 ### johanna, 22 fév
 #counts~ day + age + sex + (1|B)
@@ -341,14 +348,62 @@ rsemExpect["patient0"] <- as.integer(gsub('[a-zA-Z]', '', rsemExpect$patient))
 fit <- lm(betaNorm ~ treatment + day + age + sex + (1 | patient0), data = rsemExpect)
 fit <- betareg(betaNorm ~ treatment + day + age + sex + (patient0), data = rsemExpect)
 
-fit <- betareg(betaNorm ~ treatment, data = rsemExpect)
+fit <- betareg(betaNorm ~ day + age + sex , data = rsemExpect)
+fit <- betareg(betaNorm ~ day, data = rsemExpect)
+fit <- betareg(minMax ~ day, data = rsemExpect)
 summary(fit)
 
 rsemExpect["patient0"] <- toPatient0(rsemExpect["patient"])
 
-#rsemExpect[c("patient0","patient")]
+
+### 
+#
+# Making the logfoldchange
+#
+###
+
+winsorize <- function(x, q=0.05) {
+  extrema <- quantile(x, c(q, 1-q))  
+  x[x<extrema[1]] <- extrema[1]
+  x[x>extrema[2]] <- extrema[2]
+  x
+}
+
+library(readxl)
+library(tidyr)
+rsemDF <- read.csv("~/GitHub/codingTheMicrobiome/data/rsemDF.csv")
+rsemExpect <- read.csv("~/GitHub/codingTheMicrobiome/data/rsemExpect.csv")
+# Do you winsorize the data?
+rsemExpect["expected_count"] <- lapply(rsemExpect["expected_count"], winsorize)
+# Making the wide version of the DF
+tmp <- subset(rsemExpect, select = -c(sample) )
+wideExpect <- spread(tmp, day, expected_count)
+colnames(wideExpect) <- c("patient", "treatment", "age", "sex", "J0", "J7", "J90")
+
+wideExpect["0"]
+
+wideExpect['Fc'] = (wideExpect$J7 - wideExpect$J0) / wideExpect$J0
+wideExpect['H0'] = rep_len(0, length(wideExpect$J0))
+
+wilcox.test(wideExpect$Fc, wideExpect$H0)
+
+wilcox.test(subset(wideExpect, treatment == 1)$Fc, 
+            subset(wideExpect, treatment == 1)$H0)
 
 
+library(yarrr)
+pirateplot(formula = Fc ~ treatment, avg.line.fun = median, 
+           hdi.iter = 0, pal = c("blue"), point.cex = 2,
+           inf.method = "iqr",
+           data = subset(wideExpect, treatment == 1),
+           main = "fold Change", ylab = "Fold Change")
 
 
+median((wideExpect$`7` - wideExpect$`0`) / wideExpect$`0`)
+median(wideExpect$`7`/wideExpect$`0`)
+
+median(wideExpect$`7`)
+median(wideExpect$`0`)
+
+(J7-J0)/J0
 

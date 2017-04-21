@@ -1,0 +1,196 @@
+
+module avail
+module load bioinformatics/bowtie2/2.2.8
+bowtie2
+echo $PATH
+module avail
+module load bioinformatics/fastQC/0.11.4
+module load jdk64
+module load bioinformatics/fastQC/0.11.4
+module list
+module purge
+module list
+less .bash_profile
+less .bashrc
+ls -l
+./miniconda3/bin/conda info -e
+./miniconda3/bin/conda create -n python2 python=3
+./miniconda3/bin/conda create -n python3 python=3
+./miniconda3/bin/conda info -e
+source ~/miniconda3/bin/activate python2   # 2activate
+echo $HISTSIZE
+exit
+source ~/miniconda3/bin/activate python3   # 3activate
+source ~/miniconda3/bin/activate python2   # 2activate
+python --version
+conda install nomkl
+conda install numpy scipy matplotlib pandas
+df -h $HOME
+ls -l
+du -sh miniconda3/
+ls -l
+module avail
+ls -l
+cd bin/
+ls -l
+cd
+seqtk --help
+seqtk
+ls -l
+less .bash_history
+less .bash_profile
+mkdir Downloads
+cd Downloads/
+ls -l
+wget https://github.com/samtools/htslib/releases/download/1.3.2/htslib-1.3.2.tar.bz2
+ls -l
+tar -xf htslib-1.3.2.tar.bz2
+ls -l
+cd htslib-1.3.2
+ls -l
+mkdir ~/software/htslib-1.3.2
+./configure --preifx=$HOME/software/htslib-1.3.2
+./configure --preffix=$HOME/software/htslib-1.3.2
+./configure --prefix=$HOME/software/htslib-1.3.2
+make
+make install
+cd ..
+cd ../software/htslib-1.3.2/
+ls -l
+cd bin/
+ls -l
+cd ..
+cd ~/bin/
+ls -l
+cd ~
+ls -l
+cd software/
+ls -l
+rm Miniconda3-latest-Linux-x86_64.sh
+ls -l
+ln -s htslib-1.3.2/ htslib-latest
+ls -l
+cd ../bin/
+ln -s /home/augerjer/software/htslib-latest/bin/* .
+ls -l
+cd
+tabix
+ls -l
+cd software/
+ls -l
+mkdir seqtk-1.1.1
+cd seqtk-1.1.1/
+mkdir bin
+cd bin/
+cd ..
+rmdir bin
+cd ..
+rmdir seqtk-1.1.1/
+ls -l
+cd htslib-
+cd htslib-13
+cd htslib-latest/
+ls -l
+cd lib/
+ls -l
+cd ..#in
+ls -l
+cd ..
+ls -l
+cd j
+cd htslib-
+cd htslib-latest/
+ls -l
+cd bin/
+ls -l
+cd
+cd bin/
+ls -l
+ls bowtie2-2.2.9/
+module avail
+ls -l
+rm seqtk
+ls -l
+cd
+ls -l
+cd Downloads/
+ls -l
+rm -r htslib-1.3.2*
+ls -l
+git clone https://github.com/lh3/seqtk.git;
+cd seqtk; make
+cd seqtk
+ls -l
+./seqtk
+cd ..
+ls -l
+rm -r seqtk/
+rm -fr seqtk/
+wget https://github.com/lh3/seqtk/archive/v1.2.tar.gz
+tar -xf v1.2.tar.gz
+ls -l
+mkdir ~/software/seqtk-1.2
+cd seqtk-1.2/
+make
+ls -l
+mv seqtk ~/software/seqtk-1.2/
+pwd
+cd ~/software/seqtk-1.2/
+ls -l
+pwd
+cp ~/Downloads/seqtk-1.2/README.md .
+ls -l
+cd ..
+ls -l
+ln -s seqtk-1.2/ seqtk-latest
+cd
+cd bin/
+ln -s ~/software/seqtk-latest/seqtk .
+ls -l
+c
+cd
+cd Downloads/
+ls -l
+rm -r *
+ls -l
+cd ..
+ls -l
+cd software/
+ls -l
+cd ../bin/
+ls -l
+cd
+seqtk
+ls -lh
+module avail
+conda list
+conda install biom-format
+pip install --no-deps biom-format
+biom
+conda install future
+biom
+conda install click
+biom
+conda list
+cd miniconda3/
+cd envs/python2/
+ls -l
+cd bin/
+ls -l
+less biom
+cd
+biom
+python
+source ~/miniconda3/bin/activate python3   # 3activate
+conda list
+ls
+ls Downloads/
+ls
+rm -r Downloads/
+ls
+rm -r privatemodules/
+ls
+ll bi
+ll bin
+vi .bash_profile
+history

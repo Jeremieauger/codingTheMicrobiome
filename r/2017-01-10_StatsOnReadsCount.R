@@ -1,4 +1,4 @@
-winsorize <- function(x, q=0.05) {
+ winsorize <- function(x, q=0.05) {
   extrema <- quantile(x, c(q, 1-q))  
   x[x<extrema[1]] <- extrema[1]
   x[x>extrema[2]] <- extrema[2]
@@ -224,6 +224,7 @@ beanplot(C0$Ratio, C7$Ratio, C90$Ratio, E0$Ratio, E7$Ratio, E90$Ratio,
 beanplot(C0$Ratio, C7$Ratio, C90$Ratio, E0$Ratio, E7$Ratio, E90$Ratio,
          log = "", main="BWA", names=c("C0", "C7", "C90","E0", "E7", "E90"))
 
+t.test(E0$Ratio, E7$Ratio, paired = TRUE)
 
 wilcox.test(controls$Ratio, E0$Ratio, paired = TRUE)
 wilcox.test(controls$Ratio, E7$Ratio, paired = TRUE)
@@ -250,10 +251,6 @@ b <- regLine$coefficients[2]
 plot(DFLM$TotalReads, DFLM$MappedReads)
 abline(a,b)
 
-abline(0, bob)
-
-bob <- DFLM$MappedReads[4]/DFLM$TotalReads[4]
-bob <- DFLM$TotalReads[4]/DFLM$MappedReads[4]
 
 
 DFLM["winsoRatio"] <- winsorize(DFLM$Ratio)

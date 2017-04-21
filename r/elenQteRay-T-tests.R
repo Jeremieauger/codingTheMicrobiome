@@ -5,10 +5,9 @@ winsorize <- function(x, q=0.05) {
   x
 }
 
-#elenQte <- read_csv("C:/Users/augerjer/Desktop/travail/elenQte.csv")
 elenQte <- read.csv("~/GitHub/codingTheMicrobiome/r/elenQte_FromRay.csv")
 
-#library(reshape)
+library(reshape)
 stackedDF <- melt(elenQte, id=c("ID", "Treatment"))
 colnames(stackedDF) <- c('Patient0', 'Treatment', 'Time', 'Ratio')
 
