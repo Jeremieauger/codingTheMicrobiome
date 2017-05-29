@@ -1,18 +1,21 @@
-winsorize <- function(x, q=0.05) {
-  extrema <- quantile(x, c(q, 1-q))  
+library(beanplot)
+# Local function to deal with outliers
+winsorize <- function(x, q) {
+  if(missing(q)) { q = 0.05 }
+  extrema <- quantile(x, c(q, 1-q))
   x[x<extrema[1]] <- extrema[1]
   x[x>extrema[2]] <- extrema[2]
   x
 }
 
-rsemTPM <- read_excel("~/GitHub/codingTheMicrobiome/data/rsemTPM.xlsx")
+rsemTPM <- read.csv("~/GitHub/codingTheMicrobiome/data/rsemTPM.csv")
 # Do you want to winsorize the data
 rsemTPM["TPM"] <- lapply(rsemTPM["TPM"], winsorize)
 tmp <- subset(rsemTPM, select = -c(sample) )
 wideTPM <- spread(tmp, day, TPM)
 
 
-model <- lm(expected_count ~ treatment + day + age + sex, data=rsemExpect)
+model <- lm(TPM ~ treatment + day + age + sex, data=rsemTPM)
 summary(model)
 plot(model)
 

@@ -1,12 +1,15 @@
-winsorize <- function(x, q=0.05) {
-  extrema <- quantile(x, c(q, 1-q))  
+library(readxl)
+library(tidyr)
+# Local function to deal with outliers
+winsorize <- function(x, q) {
+  if(missing(q)) { q = 0.05 }
+  extrema <- quantile(x, c(q, 1-q))
   x[x<extrema[1]] <- extrema[1]
   x[x>extrema[2]] <- extrema[2]
   x
 }
 
-library(readxl)
-library(tidyr)
+
 rsemDF <- read.csv("~/GitHub/codingTheMicrobiome/data/rsemDF.csv")
 rsemExpect <- read_excel("~/GitHub/codingTheMicrobiome/data/rsemExpect.xlsx")
 # Do you winsorize the data?
@@ -211,8 +214,8 @@ summary(model)
 
 rsemExpect$minMax
 
-
-
+?lowess
+?plot
 rsemExpect$
 
 rsemJ0J7["decostand"] <- toMinMax(decostand(rsemJ0J7$expected_count, method = "range"))
