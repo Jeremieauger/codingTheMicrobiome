@@ -133,6 +133,7 @@ pirateplot(formula = winsorize(Fc) ~ Zeros, data = fcDF, hdi.iter = 0,
 wilcox.test(fcDF$Fc, fcDF$Zeros)
 median(fcDF$Fc)
 
+
 wilcox.test(fcDF$Counts_N0_Exp, fcDF$Counts_Cefox, paired = TRUE)
 t.test(fcDF$Counts_N0_Exp, fcDF$Counts_Cefox, paired = TRUE)
 nrow(fcDF)

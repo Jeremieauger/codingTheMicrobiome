@@ -63,7 +63,7 @@ WzDF <- cbind(DFLM[1:7], lapply(DFLM[8], winsorize), DFLM[9:10])
 J0 <- WzDF[WzDF$Time0 == 0, ][c('Patient', 'Treatment', 'Age', 'Sex', 'Ratio')]
 J7 <- WzDF[WzDF$Time0 == 1, ][c('Patient', 'Treatment', 'Age', 'Sex', 'Ratio')]
 J90 <- WzDF[WzDF$Time0 == 2, ][c('Patient', 'Treatment', 'Age', 'Sex', 'Ratio')]
-
+dxCC
 require(plyr)
 colDF <- join_all(list(J0, J7, J90), by = c('Patient', 'Treatment', 'Age', 'Sex'))
 colnames(colDF) <- c('Patient', 'Treatment', 'Age', 'Sex', 'J0', 'J7', 'J90')
@@ -78,7 +78,7 @@ install.packages('beanplot')
 library(beanplot)
 
 summary(DFLM$Ratio)
-IQR(winsorize(DFLM$Ratio))
+IQR(winsorize(DFLM$Ratio))W
 
 
 J0J7DFLM <- WzDF[WzDF$Time0 != 2, ]
@@ -275,11 +275,15 @@ main <- paste0("Cefprozil exposed patients\nn = ", nrow(subset(DFLM18, Time == "
 pirateplot(log10(Ratio) ~ Time, data = DFLM18, avg.line.fun = median,
            ylab = "Normalised Counts (log)", main = main, point.cex = 2)
 
+main <- paste0("Cefprozil exposed patients\nn = ", nrow(subset(DFLM18, Time == "J0")))
+pirateplot((Ratio) ~ Time, data = DFLM18, avg.line.fun = mean,
+           ylab = "Normalised Counts (log)", main = main, point.cex = 2)
+
 
 j0 <- subset(DFLM18, Time == "J0")$Ratio
 j7 <- subset(DFLM18, Time == "J7")$Ratio
 j90 <- subset(DFLM18, Time == "J7")$Ratio
-
+#library('tidyr')
 j0j7 <- subset(DFLM18, Time == "J0" | Time == "J7")
 tmp <- subset(j0j7, select = c('Patient', 'Time', 'Ratio'))
 j0j7Fc <- spread(tmp, Time, Ratio)
