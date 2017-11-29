@@ -192,23 +192,16 @@ sim_wilcoxon(n=36,                 # total sample size
 
 
 #' Beta distribution *****
-fitdistr(j0Tr$J0, "beta", start=list(shape1=2,shape2=5)) # 0.9122174   4.6727713
-fitdistr(j7Tr$J7, "beta", start=list(shape1=2,shape2=5)) # 0.5158790   2.2174285
-sim_wilcoxon(n=36,                 # total sample size
-             weights=list(c(1, 1)), # equal sample size per group
-             rbeta(shape1=0.9122174, shape2=4.6727713),     # distribution of first sample
-             rbeta(shape1=0.5158790, shape2=2.2174285),    # distribution of second sample
-             nsim=1000)
-
-
-#' Beta distribution
+library(MASS)
 fitdistr(j0Tr$J0*1000, "beta", start=list(shape1=2,shape2=5)) # 0.9122174   4.6727713
 fitdistr(j7Tr$J7*1000, "beta", start=list(shape1=2,shape2=5)) # 0.5158790   2.2174285
 sim_wilcoxon(n=36,                 # total sample size
              weights=list(c(1, 1)), # equal sample size per group
              rbeta(shape1=0.9122174, shape2=4.6727713),     # distribution of first sample
              rbeta(shape1=0.5158790, shape2=2.2174285),    # distribution of second sample
-             nsim=1000)
+             nsim=100000)
+
+
 
 
 # from "https://stackoverflow.com/questions/15436702/estimate-cohens-d-for-effect-size"
@@ -279,10 +272,15 @@ fitdistr(winsorize(j90Tr$J90)*1000, "cauchy") # 0.045735156 0.021744474
 plot(density(winsorize(j90Tr$J90)*1000), col = "blue", main = "compare cauchy D90"); lines(density(rcauchy(n=18, location = 0.045735156, scale = 0.021744474)), col = "red")
 
 
+######################################################
+# Testing to solve power calculations for d0-d7
 
+n.wilcox.ord(power = 0.8, alpha = 0.05, t, p, q)
+#library('samplesize')
 
+n.wilcox.ord(power = 0.11, alpha = 0.05, t = 1, p, q)
 
-
+######################################################
 
 
 

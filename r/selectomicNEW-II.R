@@ -45,17 +45,17 @@ initialCond <- rbind(initialCond, tmp)
 initialCond['Antibiotic'] <- rep("0\nInitial", nrow(initialCond))
 initialCond['Aero'] <- rep("0:Initial", nrow(initialCond))
 
-
+unique(unlist(selectomicBwa['Selectomic']))
 
 ## Selecting the patients from Selectomic experiment
-#selectomicBwa['Selectomic'] <- paste(selectomicBwa$Aero, selectomicBwa$Antibiotic, sep="\n")
+selectomicBwa['Selectomic'] <- paste(selectomicBwa$Aero, selectomicBwa$Antibiotic, sep="\n")
 # 0 Initial // 1 Air\nNone // 2 Air\nCefoxitin
 # 3 Anaerobic\nNone // 4 Anaerobic\nCefoxitin
-#selectomicBwa['SelectomicNumeric'] <- rep("Err", nrow(selectomicBwa))
-# selectomicBwa[selectomicBwa$Selectomic == "Air\nNone", ][, "SelectomicNumeric"] <- "1\nAir\nNone"
-# selectomicBwa[selectomicBwa$Selectomic == "Air\nCefoxitin", ][, "SelectomicNumeric"] <- "2\nAir\nCefoxitin"
-# selectomicBwa[selectomicBwa$Selectomic == "Anaerobic\nNone", ][, "SelectomicNumeric"] <- "3\nAnaerobic\nNone"
-# selectomicBwa[selectomicBwa$Selectomic == "Anaerobic\nCefoxitin", ][, "SelectomicNumeric"] <- "4\nAnaerobic\nCefoxitin"
+selectomicBwa['SelectomicNumeric'] <- rep("Err", nrow(selectomicBwa))
+selectomicBwa[selectomicBwa$Selectomic == "Air\nNone", ][, "SelectomicNumeric"] <- "1\nAir\nNone"
+selectomicBwa[selectomicBwa$Selectomic == "Air\nCefoxitin", ][, "SelectomicNumeric"] <- "2\nAir\nCefoxitin"
+selectomicBwa[selectomicBwa$Selectomic == "Anaerobic\nNone", ][, "SelectomicNumeric"] <- "3\nAnaerobic\nNone"
+selectomicBwa[selectomicBwa$Selectomic == "Anaerobic\nCefoxitin", ][, "SelectomicNumeric"] <- "4\nAnaerobic\nCefoxitin"
 
 # Marking the cefprozil inVivo No_exposure (to cefprozil, in clinic)
 selectoNo_Exp <- subset(selectomicBwa, select = c('Patient', 'Normalised_Counts', 'Antibiotic', 'Aero'), Day == "J0")
@@ -69,6 +69,7 @@ selectoExposed <- subset(selectomicBwa, select = c('Patient', 'Normalised_Counts
 selectoExposed['Cefprozil'] <- rep("Cefprozil", nrow(selectoExposed))
 
 selectoPirate <- rbind(initialCond, selectoNo_Exp, selectoExposed)
+dim(selectoPirate)
 
 selectoPirate$Antibiotic[selectoPirate$Antibiotic == "None"] <- "1\nNone"
 selectoPirate$Antibiotic[selectoPirate$Antibiotic == "Cefoxitin"] <- "2\nCefoxitin"
@@ -121,7 +122,6 @@ fcDF <- merge(noneDF, foxDF, by = "Patient")
 fcDF <- subset(selectoPirate, grepl("None", Selectomic), select = c("Patient", "Normalised_Counts"))
 colnames(fcDF) <- c("Patient", "Counts_N0_Exp")
 fcDF['Counts_Cefox'] <- subset(selectoPirate, grepl("Cefoxitin", Selectomic), select = c("Normalised_Counts"))
-fcDF['Fc'] <- (fcDF$Counts_Cefox-fcDF$Counts_N0_Exp)/fcDF$Counts_N0_Exp
 #fcDF['Fc'] <- (fcDF$Counts_N0_Exp-fcDF$Counts_Cefox)/fcDF$Counts_Cefox
 fcDF['Zeros'] <- rep(0, length(fcDF)) 
 
@@ -164,6 +164,30 @@ segments(rep(0, length(beforeDown)), beforeDown, rep(1, length(afterDown)), afte
 
 pirateplot(winsorize(Fc) ~ Zeros, data = fcDF, ylab = "Fold Change", xlab = "", main = "Fold Change",
            hdi.iter = 0, avg.line.fun = median, jitter.val = 0.02, point.cex = 2)
+
+
+
+#================================================================================
+# 19 sept 2017
+#================================================================================
+
+
+
+pirateplot(log(Normalised_Counts) ~ SelectomicNumeric, main = "No Exposure", ylim = c(-14, -2),
+           data = subset(selectoPirate, Cefprozil == "No_Exp"), xlab = "Culture Condition",
+           jitter.val = 0.02, point.cex = 1.2)
+
+# > colnames(selectoPirate)
+# [1] "Patient"           "Normalised_Counts" "Cefprozil"        
+# [4] "Antibiotic"        "Aero"  
+
+unique(unlist(selectoPirate$Cefprozil)) #  "0:No_Exp"    "1:Cefprozil"
+unique(unlist(selectoPirate$Antibiotic)) # "0\nInitial"   "1\nNone"      "2\nCefoxitin"
+dim(subset(selectoPirate, Cefprozil == "0:No_Exp"))
+dim(subset(selectoPirate, Cefprozil == "1:Cefprozil"))
+
+
+
 
 
 

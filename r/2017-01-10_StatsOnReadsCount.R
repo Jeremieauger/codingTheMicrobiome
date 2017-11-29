@@ -10,6 +10,7 @@ DF <- read.csv("/Users/jay/GitHub/codingTheMicrobiome/r/2017-01-10_extractedRead
 DF <- read.csv("~/GitHub/codingTheMicrobiome/r/2017-01-10_extractedReadsRatio.csv")
 DFLM <- read.csv("~/GitHub/codingTheMicrobiome/r/bwaForLm.csv")
 
+library('yarrr'); library('reshape')
 ### Tests 21 fév 2017
 
 J0 <- DFLM[DFLM$Time0 == 0, ]
@@ -72,10 +73,6 @@ colDF
 
 model <- lm((J7-J0) ~ Treatment + Age + Sex, data=colDF)
 summary(model)
-
-beanplot
-install.packages('beanplot')
-library(beanplot)
 
 summary(DFLM$Ratio)
 IQR(winsorize(DFLM$Ratio))W
@@ -273,11 +270,11 @@ DFLM18 <- subset(DFLM, Treatment == 1)
 par(mfrow=c(1,3))
 main <- paste0("Cefprozil exposed patients\nn = ", nrow(subset(DFLM18, Time == "J0")))
 pirateplot(log10(Ratio) ~ Time, data = DFLM18, avg.line.fun = median,
-           ylab = "Normalised Counts (log)", main = main, point.cex = 2)
+           ylab = "Normalised Counts (log10)", main = main, point.cex = 2)
 
-main <- paste0("Cefprozil exposed patients\nn = ", nrow(subset(DFLM18, Time == "J0")))
-pirateplot((Ratio) ~ Time, data = DFLM18, avg.line.fun = mean,
-           ylab = "Normalised Counts (log)", main = main, point.cex = 2)
+# main <- paste0("Cefprozil exposed patients\nn = ", nrow(subset(DFLM18, Time == "J0")))
+# pirateplot((Ratio) ~ Time, data = DFLM18, avg.line.fun = mean,
+#            ylab = "Normalised Counts (log)", main = main, point.cex = 2)
 
 
 j0 <- subset(DFLM18, Time == "J0")$Ratio
@@ -290,23 +287,25 @@ j0j7Fc <- spread(tmp, Time, Ratio)
 j0j7Fc['Fc'] <- log2(j0j7Fc$J7/j0j7Fc$J0)
 j0j7Fc['Zeros'] <- rep(0, nrow(j0j7Fc['Fc']))
 
- 
+
 t.test(j0j7Fc$Fc, j0j7Fc$Zeros, paired = TRUE)
 t.test(j0, j7, paired = TRUE)
 wilcox.test(j0j7Fc$Fc, j0j7Fc$Zeros, paired = TRUE)
 wilcox.test(j0, j7, paired = TRUE)
 
 
-
+library('tidyr')
 j0j7j90 <- subset(DFLM18, select = c('Patient', 'Time', 'Ratio'))
 j0j7j90Fc <- spread(j0j7j90, Time, Ratio)
-j0j7j90Fc['Fc_0_7'] <- log(j0j7j90Fc$J7/j0j7j90Fc$J0)
-j0j7j90Fc['Fc_7_90'] <- log(j0j7j90Fc$J90/j0j7j90Fc$J7)
+j0j7j90Fc['Fc_0_7'] <- log2(j0j7j90Fc$J7/j0j7j90Fc$J0)
+j0j7j90Fc['Fc_0_90'] <- log2(j0j7j90Fc$J90/j0j7j90Fc$J0)
+j0j7j90Fc['Fc_7_90'] <- log2(j0j7j90Fc$J90/j0j7j90Fc$J7)
+j0j7j90Fc['Zeros'] <- rep(0, nrow(j0j7j90Fc['Fc_0_90']))
 j0j7j90Fc['Zeros'] <- rep(0, nrow(j0j7j90Fc['Fc_0_7']))
 
-j0 <- log(j0j7j90Fc$J0)
-j7 <- log(j0j7j90Fc$J7)
-j90<- log(j0j7j90Fc$J90)
+j0 <- log10(j0j7j90Fc$J0)
+j7 <- log10(j0j7j90Fc$J7)
+j90<- log10(j0j7j90Fc$J90)
 
 z <- rep(c(0,1,2), rep(length(j0),3))
 plot(z, c(j0, j7, j90),
@@ -314,24 +313,23 @@ plot(z, c(j0, j7, j90),
      xlab="", xlim=c(-0.5, 2.5), main = "Paired Conditions")
 axis(side=1, at=c(0,1,2), c("J0", "J7", "J90"))
 # making the colored segments 0-7
-UP_0 <- log(subset(j0j7j90Fc, Fc_0_7 >= 0)$J0)
-DOWN_0 <- log(subset(j0j7j90Fc, Fc_0_7 < 0)$J0)
-UP_7 <- log(subset(j0j7j90Fc, Fc_0_7 >= 0)$J7)
-DOWN_7 <- log(subset(j0j7j90Fc, Fc_0_7 < 0)$J7)
+UP_0 <- log10(subset(j0j7j90Fc, Fc_0_7 >= 0)$J0)
+DOWN_0 <- log10(subset(j0j7j90Fc, Fc_0_7 < 0)$J0)
+UP_7 <- log10(subset(j0j7j90Fc, Fc_0_7 >= 0)$J7)
+DOWN_7 <- log10(subset(j0j7j90Fc, Fc_0_7 < 0)$J7)
 segments(rep(0, length(UP_0)), UP_0, rep(1, length(UP_7)), UP_7, col=4)
 segments(rep(0, length(DOWN_0)), DOWN_0, rep(1, length(DOWN_7)), DOWN_7, col=2)
 # making the colored segments 7-90
-UP_7 <- log(subset(j0j7j90Fc, Fc_7_90 >= 0)$J7)
-DOWN_7 <- log(subset(j0j7j90Fc, Fc_7_90 < 0)$J7)
-UP_90 <- log(subset(j0j7j90Fc, Fc_7_90 >= 0)$J90)
-DOWN_90 <- log(subset(j0j7j90Fc, Fc_7_90 < 0)$J90)
+UP_7 <- log10(subset(j0j7j90Fc, Fc_7_90 >= 0)$J7)
+DOWN_7 <- log10(subset(j0j7j90Fc, Fc_7_90 < 0)$J7)
+UP_90 <- log10(subset(j0j7j90Fc, Fc_7_90 >= 0)$J90)
+DOWN_90 <- log10(subset(j0j7j90Fc, Fc_7_90 < 0)$J90)
 segments(rep(1, length(UP_7)), UP_7, rep(2, length(UP_90)), UP_90, col=4)
 segments(rep(1, length(DOWN_7)), DOWN_7, rep(2, length(DOWN_90)), DOWN_90, col=2)
 
-graphFc <- subset(j0j7j90Fc, select = c('Fc_0_7', 'Fc_7_90'))
+graphFc <- subset(j0j7j90Fc, select = c('Fc_0_7', 'Fc_0_90'))
 graphFc <- melt(graphFc)
 pirateplot(value ~ variable, data = graphFc, main = "log2 of Fold Change (B/A)", point.cex = 2)
 
 wilcox.test(j0j7j90Fc$Fc_0_7, j0j7j90Fc$Zeros, paired = TRUE)$p.value
-
 
