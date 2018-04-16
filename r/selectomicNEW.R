@@ -153,7 +153,6 @@ wilcox.test(fcDF$Counts_N0_Exp, fcDF$Counts_Cefox, paired = TRUE)
 # may 15th - Start of stats - asked by MPD
 ################################################################################
 
-# FKING CRAPPP - R sucks
 # selectomicBwa[selectomicBwa$Antibiotic == "MEB", ] <- "1\nNone"
 # colnames <- colnames(selectomicBwa)
 # selectomicBwa <- cbind(subset(selectomicBwa, select = c(colnames)))
